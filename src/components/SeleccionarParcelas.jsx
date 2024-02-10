@@ -1,6 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { newObjetos } from "../helpers/objetos";
+import Intro from "./Intro";
 
 const SeleccionarParcelas = () => {
+  useEffect(() => {
+    newFunction();
+  }, []);
+  const [newArrayValue, setNewArrayValue] = useState([]);
+  const newFunctionTofoundTheCorrectPath = () => {
+    let newValueArray = [];
+    for (let i = 0; i < newObjetos.length; i++) {
+      const calumnas = newObjetos[0].length;
+
+      if (i % 2 === 0) {
+        for (let k = 0; k < newObjetos[i].length; k++) {
+          newValueArray.push(newObjetos[i][k]);
+        }
+      } else {
+        for (let j = calumnas - 1; j >= 0; j--) {
+          newValueArray.push(newObjetos[i][j]);
+        }
+      }
+    }
+
+    // console.log(newValueArray);
+
+    return newValueArray;
+    // console.log(newObjetos);
+  };
+  function newFunction() {
+    setNewArrayValue(newFunctionTofoundTheCorrectPath);
+  }
+
   const [arrays, setArrays] = useState([
     { id: 1 },
     { id: 2 },
@@ -302,13 +333,28 @@ const SeleccionarParcelas = () => {
     { id: 298 },
     { id: 299 },
     { id: 300 },
+    { id: 301 },
+    { id: 302 },
+    { id: 303 },
+    { id: 304 },
+    { id: 305 },
+    { id: 306 },
+    { id: 307 },
+    { id: 308 },
+    { id: 309 },
+    { id: 310 },
+    { id: 311 },
+    { id: 312 },
+    { id: 313 },
+    { id: 314 },
+    { id: 315 },
   ]);
-  const [parcelasOptimas, setParcelasOptimas] = useState();
+  const [parcelasOptimas, setParcelasOptimas] = useState("");
   const [parcelaCreada, setParcelaCreada] = useState(false);
-  const [camionAzul, setCamionAzul] = useState(false);
-  const [camionRojo, setCamionRojo] = useState(false);
-  const [camionRecolector, setCamionRecolector] = useState(false);
+  const [text, setText] = useState("Iniciar recorrido");
   const [estadoButton, setEstadoButton] = useState(true);
+  const [animacion, setAnimacion] = useState(false);
+  const [estadoInicio, setEstadoInicio] = useState(true);
   const handleLand = (id, i) => {
     if (id === 1000) {
       const newArray = [...arrays];
@@ -318,9 +364,9 @@ const SeleccionarParcelas = () => {
       const newArray = [...arrays];
       newArray[i] = { ...newArray[i], id: 4000 };
       setArrays(newArray);
-    } else if (id === 301) {
+    } else if (id === 316) {
       const newArray = [...arrays];
-      newArray[i] = { ...newArray[i], id: 301 };
+      newArray[i] = { ...newArray[i], id: 316 };
     } else if (id === 3000) {
       const newArray = [...arrays];
       newArray[i] = { ...newArray[i], id: 2000 };
@@ -339,6 +385,7 @@ const SeleccionarParcelas = () => {
       setArrays(newArray);
     }
   };
+  // console.log(arrays);
 
   const mapeoDeArray = arrays.map((array, i) => {
     /**Al utilizar el un forEach y darle valores dentro al un useState hace que nuestro codigo 
@@ -356,18 +403,30 @@ const SeleccionarParcelas = () => {
   //Mapeo de campo o de array para poder recorrer las parcelas
   const MapeoArrayParcelas = arrays.map((array, i) => {
     if (array.id >= 2000 && array.id < 3000) {
-      console.log(i);
+      // console.log(i);
       return { ...array, id: 4000 };
     } else if (array.id === 3000) {
-      return { ...array, id: 301 };
+      return { ...array, id: 316 };
     }
     return { ...array, id: 0 };
   });
   const percelasRecorridas = arrays.map((array, i) => {
+    // console.log(array);
+    // console.log(newArrayValue);
+    let value = newArrayValue[i];
+    // let y = i + 1;
+    // console.log(y);
     if (array.id >= 2000 && array.id < 3000) {
-      // console.log(i);
-      return ` ${i + 1}  `;
+      // console.log(newArrayValue[i]);
+      return `${value} `;
     }
+  });
+
+  const restartParcelasSelect = arrays.map((array) => {
+    if (array.id === 4000 || array.id === 316) {
+      return { ...array, id: 2000 };
+    }
+    return { ...array, id: 0 };
   });
   const handleNewLand = () => {
     setArrays(mapeoDeArray);
@@ -375,11 +434,18 @@ const SeleccionarParcelas = () => {
     setEstadoButton(false);
   };
   const handleStartFarming = () => {
-    setArrays(MapeoArrayParcelas);
-    setParcelasOptimas(percelasRecorridas);
+    if (text === "Iniciar recorrido") {
+      setArrays(MapeoArrayParcelas);
+      setParcelasOptimas(percelasRecorridas);
+      setText("Regenerar terreno");
+    } else {
+      setArrays(restartParcelasSelect);
+      setText("Iniciar recorrido");
+    }
   };
+
   const resetLand = arrays.map((array) => {
-    if (array.id === 2000 || array.id === 301 || array.id === 3000) {
+    if (array.id === 2000 || array.id === 316 || array.id === 3000) {
       return { ...array, id: 2000 };
     }
     return { ...array, id: 0 };
@@ -387,59 +453,229 @@ const SeleccionarParcelas = () => {
   const handleResetLand = () => {
     setArrays(resetLand);
   };
-  console.log(arrays);
-  console.log(estadoButton);
+  // console.log(arrays);
+  // console.log(estadoButton);
+  const handleAnimation = () => {
+    if (animacion) {
+      setAnimacion(false);
+    } else {
+      setAnimacion(true);
+    }
+  };
+  const handleButtonState = () => {
+    setEstadoInicio(false);
+  };
+
   return (
     <>
-      <div className=" container  mx-auto">
-        <h1 className="font-bold text-3xl text-white ">
-          Tu camino mas optimo es:{" "}
-          <span className="t text-yellow-600">{parcelasOptimas}</span>
-        </h1>
-        <div className="grid grid3">
-          {arrays.map((array, index) => {
-            return (
-              <div
-                onClick={() => handleLand(array.id, index)}
-                className={`${
-                  array.id === 301
-                    ? "bg-slate-500"
-                    : array.id === 4000
-                    ? "bg-green-500"
-                    : array.id === 3000
-                    ? "bg-orange-800"
-                    : array.id >= 2000
-                    ? "bg-yellow-500"
-                    : array.id >= 1000
-                    ? "bg-black"
-                    : array.id === 0
-                    ? " bg-white"
-                    : "bg-red-400"
-                } w-full border border-zinc-50 h-14 grid place-items-center cursor-crosshair`}
-              >
-                {array.id === 0 ? null : index + 1}
+      {estadoInicio ? (
+        <>
+          <Intro handleButton={() => handleButtonState()} />
+        </>
+      ) : (
+        <>
+          {animacion ? (
+            <>
+              <div>
+                <div className=" relative">
+                  <div className=" h-screen w-screen bg-black absolute animate__animated animate__fadeInDown">
+                    <div className=" container mx-auto mt-28 relative">
+                      <h1 className=" absolute text-white font-bold text-8xl hover:text-gray-500 cursor-none animate__animated animate__backInDown">
+                        Planteamiento del problema
+                      </h1>
+                      <br />
+                      <br />
+                      <br />
+                      <br /> <br />
+                      <p className="text-black font-bold text-4xl hover:text-gray-200 transition-all">
+                        Se busca desarrollar un sistema de trazado de rutas de
+                        cosecha para los tractores agrícolas, esto para que el
+                        proceso sea más rápido debido a un cálculo de distancias
+                        preciso. Debido a que este tipo de prácticas agrícolas
+                        se dan a lo largo del Estado de Sinaloa, optimizar uno
+                        de los procesos más importantes de estas actividades
+                        puede ser un tema de interés para los agricultores.
+                      </p>
+                      <h1 className="text-white font-bold text-8xl hover:text-gray-500 animate__animated animate__backInLeft ">
+                        Algoritmo que se utilizo
+                      </h1>
+                      <br />
+                      <p className="text-black font-bold text-6xl hover:text-gray-200 transition-all">
+                        Camino mas rapido
+                      </p>
+                      <br />
+                      <br />
+                      <h1 className="text-white font-bold text-8xl hover:text-gray-500 animate__animated animate__backInUp">
+                        Objetivo del programa
+                      </h1>
+                      <br />
+                      <br />
+                      <p className="text-black font-bold text-6xl hover:text-gray-200 transition-all">
+                        El objetivo principal del programa es poder proporcionar
+                        al operador de los tractores una ruta óptima y fácil de
+                        interpretar de recolección de las cosechas.
+                      </p>
+                    </div>
+                  </div>
+                  <div className=" absolute">
+                    <div className="">
+                      {/* <h1 className="text-white text-6xl font-bold">
+                        Como lo hicimos
+                      </h1> */}
+                    </div>
+                  </div>
+                </div>
               </div>
-            );
-          })}
-        </div>
-        {parcelaCreada ? (
-          <>
-            <button
+            </>
+          ) : (
+            <>
+              {" "}
+              <div>
+                <div className=" relative">
+                  <div className=" h-screen w-screen bg-black absolute animate__animated animate__fadeOutUp">
+                    <div className=" container mx-auto mt-28 relative">
+                      <h1 className=" absolute text-white font-bold text-8xl hover:text-gray-500 cursor-none animate__animated animate__fadeOutDown">
+                        Planteamiento del problema
+                      </h1>
+                      <br />
+                      <br />
+                      <br />
+                      <br /> <br />
+                      <p className="text-black font-bold text-4xl hover:text-gray-200 transition-all">
+                        Se busca desarrollar un sistema de trazado de rutas de
+                        cosecha para los tractores agrícolas, esto para que el
+                        proceso sea más rápido debido a un cálculo de distancias
+                        preciso. Debido a que este tipo de prácticas agrícolas
+                        se dan a lo largo del Estado de Sinaloa, optimizar uno
+                        de los procesos más importantes de estas actividades
+                        puede ser un tema de interés para los agricultores.
+                      </p>
+                      <h1 className="text-white font-bold text-8xl hover:text-gray-500 animate__animated animate__fadeOutLeftBig">
+                        Algoritmo que se utilizo
+                      </h1>
+                      <br />
+                      <p className="text-black font-bold text-6xl hover:text-gray-200 transition-all">
+                        Camino mas rapido
+                      </p>
+                      <br />
+                      <br />
+                      <h1 className="text-white font-bold text-8xl hover:text-gray-500 animate__animated animate__fadeOutDown">
+                        Objetivo del programa
+                      </h1>
+                      <br />
+                      <br />
+                      <p className="text-black font-bold text-6xl hover:text-gray-200 transition-all">
+                        El objetivo principal del programa es poder proporcionar
+                        al operador de los tractores una ruta óptima y fácil de
+                        interpretar de recolección de las cosechas.
+                      </p>
+                    </div>
+                  </div>
+                  <div className=" absolute">
+                    <div className="">
+                      {/* <h1 className="text-white text-6xl font-bold">
+                    Como lo hicimos
+                  </h1> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+          <div className={`${animacion ? "" : "mt-5 items-centers p-5"}`}>
+            <div className=" container mx-auto   relative items-center">
+              <div className=" absolute end-1 py-10">
+                <div id="menuToggle">
+                  <input id="checkbox" type="checkbox" />
+                  <label
+                    onClick={() => handleAnimation()}
+                    class="toggle"
+                    for="checkbox"
+                  >
+                    <div class="bar bar--top"></div>
+                    <div class="bar bar--middle"></div>
+                    <div class="bar bar--bottom"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className=" container  mx-auto">
+            <h1 className="font-bold text-3xl text-white ">
+              Tu camino mas optimo es:{" "}
+              <span className="t text-yellow-600">{parcelasOptimas}</span>
+            </h1>
+            <div
+              className="grid place-items-center"
               onClick={() => handleStartFarming()}
-              className=" p-2 rounded text-xl text-white text-bold bg-slate-400 my-1"
             >
-              Iniciar recorrido
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={() => handleNewLand()}
-            className="p-2 rounded text-xl text-white text-bold bg-slate-400 my-1"
-          >
-            Generar terreno
-          </button>
-        )}
-      </div>
+              <button className="text-3xl font-bold text-white  mb-16">
+                {" "}
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFF0lEQVR4nO3aXUxbVRwA8OuLxvjkk8YH47MmvviyjN5zzi0wmbQF2l46QD7GFIMZQQeRbEFlA8JnezHMD5b4QrLExLhk8cX4IoZEfHLZHsYeJslI1BjcdAM57Vb6N6ejsZTTz3t7P9rzT/6hIe29p7+e//2fe1pJEiFCREY0ulzPNmOlX0X4dgDhzSZEznnd7ucynyciLdSX1Sc9CHlDMvnei8ieFxHIyERQxj83IqVLPXLk6fTXVnV4a5RXVBkvtCD8gIPGzWaZ0ICMlj0Yu6RqjDcwft6PyBkVkV8LRcuWKiK/tch4wlNT96JUydHQ0PCUD2M1iPCPPn6J/o+i1MLsm52wdvZsMtlj9r9cr/Ehkghh8hM7BzuXVCnR6FJeC8h4qUUm2zkBMIHhFj98O/ge3JubA6ppB/L+/Dz8MDwMY6ET0EzcBZQ4+dqHcZ0kSU9ITgvf0boX/IgMqZhs5CvBfo8Xvup/F/6YmjqEli23ZmaS0Aw83/GDiPzul/FkE8YvSU4oURXhlXwl2vP6cfj8ZC+sj40VjJYtb4+Pw3LfO/DW8cY8mDihYnLDi5S++vr6ZyQ7xWmXqyZfiZ6oOwafdHXDL6OjsBuJ6IbLTHZMdmx2DnauXGPxy2SbjVmyQwzI8tEQInHuQIk7ec367v0z8M/cvOFo2fJBOAyrIyMw19EJQTe/+bQiEh+UFWQtHqnDbCCZgxtsaoZvTg/An9PTpqFly79mZ5Mf4LmACj6sZF4f9wZk5Zht8Eb8AdicnLQcLVuysbExpo+ZVc+QrLgtx/vAH4C/OcsPuyW7lLDZaNlM5OGNBtXkOs1qnGKukezabDoiD+/DYKsuPL1R6nm3wxE4byYiD+8jNQT3w2Fds4HFUPepklIPYArxghmIPLyPW0PJUtBbTlYCphDHQ23lQ+ThTbS1w44BeNQGgCz/jURgpr3DeEQe3mRbh2F41CaAKUS262MYIg9vqr0Ddgy+DbMLYApx3ghEs/CozQANQeThRTq7yrIBQG0IyJK918Xuk8Ujel3uVzPxFrq6y4ZHbQqYQvy05zAi2yDOiueVydZBvJ6y4lEbA6YQP+vpzdzJucdFzMRjLyw3HrU5YFZEmWwdBkx7whe9p0zBow4ATOWXb/cdQMwKOEEU0wZFHQTIcpoouQE9Mp5Zq601HVBPmDlWZuOV8XkuoAeRC+yv2YDUQcls0q24IQC1vIA5QwBqApCWuYTFDNQEIFjZRMQM1AQgiBmoWb+uEyWsCUCwelaJJqIJQLB6ZolljCYAgVb7QtppIQArHXDvzh2IXrpkedlFl5Zgb2PDOYCxK1cgsbOTfJzY3YXY1auW4fHGYntAyvnU4zdvAr140Ty8xUWIX7vGrQZHANL9fLiyAhCPP54Bd+9C7PLlsuNFl5chsbW1L7cHj9bWgC4s5BynbQFp5huKx+HR6uqBN2RkFvKBOQ6Q5ikpQ2ZdEZcMZwJqj7McDabYYzoakBrZYEqc1Y4HpAY0mHyNoioAaYkNRm9nryhAWkQpGlX6lQeo5W8GRjafigWkvFl26xbEr18vulFULSDlXOdKaRQCcGUliXYA0KA7mOoq4fV1UcK0QDzRRPZD9zJmc1MsY2gZ7yjEQlrTD6Fni8zxTSQqNhNKB4yJ7awSZ+BiYY2i1KzoDdWojq0nWu1b+g+t/lKJ02AcARgVX2uWDhgTX6wb9NOOTWMbRdX8tMMpIQDtDCiyNqtBXkARIiQz4z9cXQdeyGlX8gAAAABJRU5ErkJggg==" />
+              </button>
+            </div>
+
+            <div className="gridNewClass">
+              <button onClick={() => handleStartFarming()}>
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFF0lEQVR4nO3aXUxbVRwA8OuLxvjkk8YH47MmvviyjN5zzi0wmbQF2l46QD7GFIMZQQeRbEFlA8JnezHMD5b4QrLExLhk8cX4IoZEfHLZHsYeJslI1BjcdAM57Vb6N6ejsZTTz3t7P9rzT/6hIe29p7+e//2fe1pJEiFCREY0ulzPNmOlX0X4dgDhzSZEznnd7ucynyciLdSX1Sc9CHlDMvnei8ieFxHIyERQxj83IqVLPXLk6fTXVnV4a5RXVBkvtCD8gIPGzWaZ0ICMlj0Yu6RqjDcwft6PyBkVkV8LRcuWKiK/tch4wlNT96JUydHQ0PCUD2M1iPCPPn6J/o+i1MLsm52wdvZsMtlj9r9cr/Ehkghh8hM7BzuXVCnR6FJeC8h4qUUm2zkBMIHhFj98O/ge3JubA6ppB/L+/Dz8MDwMY6ET0EzcBZQ4+dqHcZ0kSU9ITgvf0boX/IgMqZhs5CvBfo8Xvup/F/6YmjqEli23ZmaS0Aw83/GDiPzul/FkE8YvSU4oURXhlXwl2vP6cfj8ZC+sj40VjJYtb4+Pw3LfO/DW8cY8mDihYnLDi5S++vr6ZyQ7xWmXqyZfiZ6oOwafdHXDL6OjsBuJ6IbLTHZMdmx2DnauXGPxy2SbjVmyQwzI8tEQInHuQIk7ec367v0z8M/cvOFo2fJBOAyrIyMw19EJQTe/+bQiEh+UFWQtHqnDbCCZgxtsaoZvTg/An9PTpqFly79mZ5Mf4LmACj6sZF4f9wZk5Zht8Eb8AdicnLQcLVuysbExpo+ZVc+QrLgtx/vAH4C/OcsPuyW7lLDZaNlM5OGNBtXkOs1qnGKukezabDoiD+/DYKsuPL1R6nm3wxE4byYiD+8jNQT3w2Fds4HFUPepklIPYArxghmIPLyPW0PJUtBbTlYCphDHQ23lQ+ThTbS1w44BeNQGgCz/jURgpr3DeEQe3mRbh2F41CaAKUS262MYIg9vqr0Ddgy+DbMLYApx3ghEs/CozQANQeThRTq7yrIBQG0IyJK918Xuk8Ujel3uVzPxFrq6y4ZHbQqYQvy05zAi2yDOiueVydZBvJ6y4lEbA6YQP+vpzdzJucdFzMRjLyw3HrU5YFZEmWwdBkx7whe9p0zBow4ATOWXb/cdQMwKOEEU0wZFHQTIcpoouQE9Mp5Zq601HVBPmDlWZuOV8XkuoAeRC+yv2YDUQcls0q24IQC1vIA5QwBqApCWuYTFDNQEIFjZRMQM1AQgiBmoWb+uEyWsCUCwelaJJqIJQLB6ZolljCYAgVb7QtppIQArHXDvzh2IXrpkedlFl5Zgb2PDOYCxK1cgsbOTfJzY3YXY1auW4fHGYntAyvnU4zdvAr140Ty8xUWIX7vGrQZHANL9fLiyAhCPP54Bd+9C7PLlsuNFl5chsbW1L7cHj9bWgC4s5BynbQFp5huKx+HR6uqBN2RkFvKBOQ6Q5ikpQ2ZdEZcMZwJqj7McDabYYzoakBrZYEqc1Y4HpAY0mHyNoioAaYkNRm9nryhAWkQpGlX6lQeo5W8GRjafigWkvFl26xbEr18vulFULSDlXOdKaRQCcGUliXYA0KA7mOoq4fV1UcK0QDzRRPZD9zJmc1MsY2gZ7yjEQlrTD6Fni8zxTSQqNhNKB4yJ7awSZ+BiYY2i1KzoDdWojq0nWu1b+g+t/lKJ02AcARgVX2uWDhgTX6wb9NOOTWMbRdX8tMMpIQDtDCiyNqtBXkARIiQz4z9cXQdeyGlX8gAAAABJRU5ErkJggg==" />
+              </button>
+              <div className="grid grid3">
+                {arrays.map((array, index) => {
+                  return (
+                    <div
+                      onClick={() => handleLand(array.id, index)}
+                      className={`${
+                        array.id === 316
+                          ? "bg-slate-500"
+                          : array.id === 4000
+                          ? "bg-green-500"
+                          : array.id === 3000
+                          ? "select-new-bad-parcela"
+                          : array.id >= 2000
+                          ? "parcelas"
+                          : array.id >= 1000
+                          ? "newcolor"
+                          : array.id === 0
+                          ? "newcolor2 border-none"
+                          : "select-parcela "
+                      } w-full borders rounded-sm h-14 grid place-items-center cursor-crosshair`}
+                    >
+                      <p className="font-bold text-color">
+                        {array.id === 0 ? null : index + 1}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+              <button className=" ml-16" onClick={() => handleStartFarming()}>
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFF0lEQVR4nO3aXUxbVRwA8OuLxvjkk8YH47MmvviyjN5zzi0wmbQF2l46QD7GFIMZQQeRbEFlA8JnezHMD5b4QrLExLhk8cX4IoZEfHLZHsYeJslI1BjcdAM57Vb6N6ejsZTTz3t7P9rzT/6hIe29p7+e//2fe1pJEiFCREY0ulzPNmOlX0X4dgDhzSZEznnd7ucynyciLdSX1Sc9CHlDMvnei8ieFxHIyERQxj83IqVLPXLk6fTXVnV4a5RXVBkvtCD8gIPGzWaZ0ICMlj0Yu6RqjDcwft6PyBkVkV8LRcuWKiK/tch4wlNT96JUydHQ0PCUD2M1iPCPPn6J/o+i1MLsm52wdvZsMtlj9r9cr/Ehkghh8hM7BzuXVCnR6FJeC8h4qUUm2zkBMIHhFj98O/ge3JubA6ppB/L+/Dz8MDwMY6ET0EzcBZQ4+dqHcZ0kSU9ITgvf0boX/IgMqZhs5CvBfo8Xvup/F/6YmjqEli23ZmaS0Aw83/GDiPzul/FkE8YvSU4oURXhlXwl2vP6cfj8ZC+sj40VjJYtb4+Pw3LfO/DW8cY8mDihYnLDi5S++vr6ZyQ7xWmXqyZfiZ6oOwafdHXDL6OjsBuJ6IbLTHZMdmx2DnauXGPxy2SbjVmyQwzI8tEQInHuQIk7ec367v0z8M/cvOFo2fJBOAyrIyMw19EJQTe/+bQiEh+UFWQtHqnDbCCZgxtsaoZvTg/An9PTpqFly79mZ5Mf4LmACj6sZF4f9wZk5Zht8Eb8AdicnLQcLVuysbExpo+ZVc+QrLgtx/vAH4C/OcsPuyW7lLDZaNlM5OGNBtXkOs1qnGKukezabDoiD+/DYKsuPL1R6nm3wxE4byYiD+8jNQT3w2Fds4HFUPepklIPYArxghmIPLyPW0PJUtBbTlYCphDHQ23lQ+ThTbS1w44BeNQGgCz/jURgpr3DeEQe3mRbh2F41CaAKUS262MYIg9vqr0Ddgy+DbMLYApx3ghEs/CozQANQeThRTq7yrIBQG0IyJK918Xuk8Ujel3uVzPxFrq6y4ZHbQqYQvy05zAi2yDOiueVydZBvJ6y4lEbA6YQP+vpzdzJucdFzMRjLyw3HrU5YFZEmWwdBkx7whe9p0zBow4ATOWXb/cdQMwKOEEU0wZFHQTIcpoouQE9Mp5Zq601HVBPmDlWZuOV8XkuoAeRC+yv2YDUQcls0q24IQC1vIA5QwBqApCWuYTFDNQEIFjZRMQM1AQgiBmoWb+uEyWsCUCwelaJJqIJQLB6ZolljCYAgVb7QtppIQArHXDvzh2IXrpkedlFl5Zgb2PDOYCxK1cgsbOTfJzY3YXY1auW4fHGYntAyvnU4zdvAr140Ty8xUWIX7vGrQZHANL9fLiyAhCPP54Bd+9C7PLlsuNFl5chsbW1L7cHj9bWgC4s5BynbQFp5huKx+HR6uqBN2RkFvKBOQ6Q5ikpQ2ZdEZcMZwJqj7McDabYYzoakBrZYEqc1Y4HpAY0mHyNoioAaYkNRm9nryhAWkQpGlX6lQeo5W8GRjafigWkvFl26xbEr18vulFULSDlXOdKaRQCcGUliXYA0KA7mOoq4fV1UcK0QDzRRPZD9zJmc1MsY2gZ7yjEQlrTD6Fni8zxTSQqNhNKB4yJ7awSZ+BiYY2i1KzoDdWojq0nWu1b+g+t/lKJ02AcARgVX2uWDhgTX6wb9NOOTWMbRdX8tMMpIQDtDCiyNqtBXkARIiQz4z9cXQdeyGlX8gAAAABJRU5ErkJggg==" />
+              </button>
+            </div>
+            <div className="grid place-items-center">
+              {!parcelaCreada ? (
+                <button
+                  onClick={() => handleNewLand()}
+                  className="p-2 rounded text-xl text-white text-bold  my-1"
+                >
+                  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFF0lEQVR4nO3aXUxbVRwA8OuLxvjkk8YH47MmvviyjN5zzi0wmbQF2l46QD7GFIMZQQeRbEFlA8JnezHMD5b4QrLExLhk8cX4IoZEfHLZHsYeJslI1BjcdAM57Vb6N6ejsZTTz3t7P9rzT/6hIe29p7+e//2fe1pJEiFCREY0ulzPNmOlX0X4dgDhzSZEznnd7ucynyciLdSX1Sc9CHlDMvnei8ieFxHIyERQxj83IqVLPXLk6fTXVnV4a5RXVBkvtCD8gIPGzWaZ0ICMlj0Yu6RqjDcwft6PyBkVkV8LRcuWKiK/tch4wlNT96JUydHQ0PCUD2M1iPCPPn6J/o+i1MLsm52wdvZsMtlj9r9cr/Ehkghh8hM7BzuXVCnR6FJeC8h4qUUm2zkBMIHhFj98O/ge3JubA6ppB/L+/Dz8MDwMY6ET0EzcBZQ4+dqHcZ0kSU9ITgvf0boX/IgMqZhs5CvBfo8Xvup/F/6YmjqEli23ZmaS0Aw83/GDiPzul/FkE8YvSU4oURXhlXwl2vP6cfj8ZC+sj40VjJYtb4+Pw3LfO/DW8cY8mDihYnLDi5S++vr6ZyQ7xWmXqyZfiZ6oOwafdHXDL6OjsBuJ6IbLTHZMdmx2DnauXGPxy2SbjVmyQwzI8tEQInHuQIk7ec367v0z8M/cvOFo2fJBOAyrIyMw19EJQTe/+bQiEh+UFWQtHqnDbCCZgxtsaoZvTg/An9PTpqFly79mZ5Mf4LmACj6sZF4f9wZk5Zht8Eb8AdicnLQcLVuysbExpo+ZVc+QrLgtx/vAH4C/OcsPuyW7lLDZaNlM5OGNBtXkOs1qnGKukezabDoiD+/DYKsuPL1R6nm3wxE4byYiD+8jNQT3w2Fds4HFUPepklIPYArxghmIPLyPW0PJUtBbTlYCphDHQ23lQ+ThTbS1w44BeNQGgCz/jURgpr3DeEQe3mRbh2F41CaAKUS262MYIg9vqr0Ddgy+DbMLYApx3ghEs/CozQANQeThRTq7yrIBQG0IyJK918Xuk8Ujel3uVzPxFrq6y4ZHbQqYQvy05zAi2yDOiueVydZBvJ6y4lEbA6YQP+vpzdzJucdFzMRjLyw3HrU5YFZEmWwdBkx7whe9p0zBow4ATOWXb/cdQMwKOEEU0wZFHQTIcpoouQE9Mp5Zq601HVBPmDlWZuOV8XkuoAeRC+yv2YDUQcls0q24IQC1vIA5QwBqApCWuYTFDNQEIFjZRMQM1AQgiBmoWb+uEyWsCUCwelaJJqIJQLB6ZolljCYAgVb7QtppIQArHXDvzh2IXrpkedlFl5Zgb2PDOYCxK1cgsbOTfJzY3YXY1auW4fHGYntAyvnU4zdvAr140Ty8xUWIX7vGrQZHANL9fLiyAhCPP54Bd+9C7PLlsuNFl5chsbW1L7cHj9bWgC4s5BynbQFp5huKx+HR6uqBN2RkFvKBOQ6Q5ikpQ2ZdEZcMZwJqj7McDabYYzoakBrZYEqc1Y4HpAY0mHyNoioAaYkNRm9nryhAWkQpGlX6lQeo5W8GRjafigWkvFl26xbEr18vulFULSDlXOdKaRQCcGUliXYA0KA7mOoq4fV1UcK0QDzRRPZD9zJmc1MsY2gZ7yjEQlrTD6Fni8zxTSQqNhNKB4yJ7awSZ+BiYY2i1KzoDdWojq0nWu1b+g+t/lKJ02AcARgVX2uWDhgTX6wb9NOOTWMbRdX8tMMpIQDtDCiyNqtBXkARIiQz4z9cXQdeyGlX8gAAAABJRU5ErkJggg==" />
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => handleStartFarming()}
+                    className=" p-2 rounded text-xl text-white text-bold bg-slate-400 my-1"
+                  >
+                    {text}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* <button onClick={() => newFunction()}>recorrido 2</button> */}
     </>
   );
 };
